@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/core";
-import { Button, Text, View, FlatList, StyleSheet } from "react-native";
+import {
+  Button,
+  Text,
+  View,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+  Image,
+  ScrollView,
+} from "react-native";
 import axios from "axios";
 import { shouldUseActivityState } from "react-native-screens";
 
@@ -27,49 +37,78 @@ export default function HomeScreen() {
   }, []);
 
   return isLoading ? (
-    <View>
-      <Text>Is Loading...</Text>
+    <View style={{ flex: 1 }}>
+      <ActivityIndicator size="large" color="grey" />
     </View>
   ) : (
-    <View>
-      <Text>Welcome home!</Text>
-      <View>
-        <FlatList
-          data={data}
-          keyExtractor={(item) => item._id}
-          renderItem={(item) => (
-            <View style={styles.title}>
-              <Text styles={styles.style}>{item.title}</Text>
+    //<ScrollView>
+    //  <>
+    <FlatList
+      style={{ flex: 1 }}
+      contentContainerStyle={{ alignItems: "center" }}
+      data={data}
+      keyExtractor={(item) => item._id}
+      renderItem={({ item }) => {
+        console.log("item ===>", item); // ici
+        return (
+          <TouchableOpacity
+            style={styles.sheet}
+            onPress={() => {
+              navigation.navigate("Room", {
+                roomId: item._id,
+              });
+            }}
+          >
+            <Image
+              style={styles.img}
+              source={{ uri: item.photos[0].url }}
+            ></Image>
+            <View style={styles.price}>
+              <Text style={{ color: "white" }}>{item.price}</Text>
             </View>
-          )}
-        />
-      </View>
-      <Button
-        title="Go to Profile"
-        onPress={() => {
-          navigation.navigate("Profile", { userId: 123 });
-        }}
-      />
-    </View>
+            <Text numberOfLines={1} styles={styles.text}>
+              {item.title}
+            </Text>
+          </TouchableOpacity>
+        );
+      }}
+    />
+
+    //  </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   sheet: {
-    height: 50,
-    width: 50,
-  },
-  title: {
-    color: "black",
-    height: 60,
-    width: 200,
+    width: 300,
     borderStyle: "solid",
     borderWidth: 2,
     borderColor: "red",
+    alignItems: "center",
   },
+
   text: {
     color: "black",
-    width: 150,
+    width: 100,
     height: 100,
+  },
+
+  img: {
+    width: 300,
+    height: 200,
+    position: "relative",
+  },
+
+  price: {
+    width: 50,
+    height: 30,
+    position: "absolute",
+    backgroundColor: "black",
+    left: 0,
+    bottom: 20,
+  },
+
+  flatList: {
+    flex: 1,
   },
 });

@@ -9,6 +9,7 @@ import ProfileScreen from "./containers/ProfileScreen";
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
 import SettingsScreen from "./containers/SettingsScreen";
+import RoomScreen from "./containers/RoomScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -79,7 +80,7 @@ export default function App() {
                       <Stack.Screen
                         name="Home"
                         options={{
-                          title: "My App",
+                          title: "Home",
                           headerStyle: { backgroundColor: "red" },
                           headerTitleStyle: { color: "white" },
                         }}
@@ -94,6 +95,15 @@ export default function App() {
                         }}
                       >
                         {() => <ProfileScreen />}
+                      </Stack.Screen>
+
+                      <Stack.Screen
+                        name="Room"
+                        options={{
+                          title: "Room",
+                        }}
+                      >
+                        {(props) => <RoomScreen {...props} />}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}
