@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/core";
+import { AntDesign } from "@expo/vector-icons";
 import {
   Button,
   Text,
@@ -36,6 +37,21 @@ export default function HomeScreen() {
     fetchData();
   }, []);
 
+  const startsPrinter = (num) => {
+    const tab = [];
+
+    for (let i = 1; i <= 5; i++) {
+      console.log("num", i, num);
+      if (i <= num) {
+        tab.push(<AntDesign name="star" size={24} color="yellow" />);
+      } else {
+        tab.push(<AntDesign name="star" size={24} color="black" />);
+      }
+    }
+
+    return tab;
+  };
+
   return isLoading ? (
     <View style={{ flex: 1 }}>
       <ActivityIndicator size="large" color="grey" />
@@ -69,6 +85,9 @@ export default function HomeScreen() {
             <Text numberOfLines={1} styles={styles.text}>
               {item.title}
             </Text>
+            <View style={styles.starsView}>
+              {startsPrinter(item.ratingValue)}
+            </View>
           </TouchableOpacity>
         );
       }}
@@ -110,5 +129,11 @@ const styles = StyleSheet.create({
 
   flatList: {
     flex: 1,
+  },
+
+  starsView: {
+    flexDirection: "row",
+    width: 300,
+    backgroundColor: "grey",
   },
 });
