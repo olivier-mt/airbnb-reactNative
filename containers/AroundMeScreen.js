@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 import MapView from "react-native-maps";
 import axios from "axios";
+import * as Location from "expo-location";
 
 const AroundMeScreen = () => {
   const [data, setData] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState();
+  const [coords, setCoords] = useState();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -15,13 +18,31 @@ const AroundMeScreen = () => {
         );
 
         setData(result.data);
-        setIsLoading(false);
       } catch (error) {
         console.log(error.response.message);
       }
     };
 
     fetchData();
+
+    const askPermission = async () => {
+      let { status } = await Location.requestBackgroundPermissionsAsync();
+
+      if (status === "granted") {
+        let location = await Location.getCurrentPositionAsync({});
+        console.log("location =>", location);
+        const obj = {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        };
+        setCoords(obj);
+      } else {
+        setError(true);
+      }
+      setIsLoading(false);
+    };
+
+    askPermission();
   }, []);
 
   console.log("data around", data);
