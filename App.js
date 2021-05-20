@@ -10,6 +10,7 @@ import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
 import SettingsScreen from "./containers/SettingsScreen";
 import RoomScreen from "./containers/RoomScreen";
+import AroundMeScreen from "./containers/AroundMeScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -108,6 +109,21 @@ export default function App() {
                     </Stack.Navigator>
                   )}
                 </Tab.Screen>
+
+                <Tab.Screen
+                  name="Around Me"
+                  options={{
+                    title: "Around me",
+                    // tabBarIcon: ({ color, size }) => (
+                    //  <Ionicons name={"ios-home"} size={size} color={color} />
+                    // ),
+                  }}
+                >
+                  {() => {
+                    return <AroundMeScreen />;
+                  }}
+                </Tab.Screen>
+
                 <Tab.Screen
                   name="Settings"
                   options={{

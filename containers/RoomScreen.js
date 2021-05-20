@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
+import MapView from "react-native-maps";
 import axios from "axios";
 
 export default function RoomScreen({ navigation, route }) {
@@ -25,6 +26,7 @@ export default function RoomScreen({ navigation, route }) {
         );
 
         setData(response.data);
+
         setIsLoading(false);
       } catch (error) {
         console.log(error.response);
@@ -63,6 +65,27 @@ export default function RoomScreen({ navigation, route }) {
           <Text>{data.description}</Text>
         )}
       </TouchableOpacity>
+
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: 48.856614,
+          longitude: 2.3522219,
+          latitudeDelta: 0.2,
+          longitudeDelta: 0.2,
+        }}
+        showsUserLocation={false}
+      >
+        <MapView.Marker
+          key={data._id}
+          coordinate={{
+            latitude: data.location[1],
+            longitude: data.location[0],
+          }}
+          title={data.title}
+          description={data.description}
+        />
+      </MapView>
     </View>
   );
 }
@@ -80,5 +103,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  map: {
+    width: 300,
+    height: 300,
   },
 });
