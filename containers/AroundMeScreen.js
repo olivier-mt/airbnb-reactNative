@@ -7,6 +7,7 @@ import * as Location from "expo-location";
 const AroundMeScreen = () => {
   const [data, setData] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoading2, setIsLoading2] = useState(true);
   const [error, setError] = useState();
   const [coords, setCoords] = useState();
 
@@ -26,28 +27,37 @@ const AroundMeScreen = () => {
     fetchData();
 
     const askPermission = async () => {
-      let { status } = await Location.requestBackgroundPermissionsAsync();
+      try {
+        let { status } = await Location.requestForegroundPermissionsAsync();
 
-      if (status === "granted") {
-        let location = await Location.getCurrentPositionAsync({});
-        console.log("location =>", location);
-        const obj = {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        };
-        setCoords(obj);
-      } else {
-        setError(true);
+        console.log("status", status);
+        if (status === "granted") {
+          let location = await Location.getCurrentPositionAsync();
+
+          console.log(location.coords.latitude);
+          console.log(location.coords.longitude);
+          console.log("location =>", location);
+          const obj = {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          };
+          setCoords(obj);
+        } else {
+          setError(true);
+        }
+
+        console.log("coords!!!", coords);
+        setIsLoading2(false);
+      } catch (error) {
+        console.log(error);
       }
-      setIsLoading(false);
     };
-
     askPermission();
   }, []);
 
-  console.log("data around", data);
+  //console.log("data around", data);
 
-  return isLoading ? (
+  return isLoading && isLoading2 ? (
     <View>
       <Text>Is Loading</Text>
     </View>
@@ -61,6 +71,7 @@ const AroundMeScreen = () => {
           latitudeDelta: 0.2,
           longitudeDelta: 0.2,
         }}
+        showsUserLocation={true}
       >
         {/* GET EACH ROOM LOCATION*/}
 
@@ -75,12 +86,15 @@ const AroundMeScreen = () => {
               }}
               title={elem.title}
               description={elem.description}
+              showsUserLocation={true}
             />
           );
         })}
 
         {/*------------------------*/}
       </MapView>
+      <Text>Latitude de l'utilisateur : {coords.latitude}</Text>
+      <Text>Longitude de l'utilisateur : {coords.longitude}</Text>
     </SafeAreaView>
   );
 };

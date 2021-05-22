@@ -11,8 +11,14 @@ import {
 import axios from "axios";
 import Logo from "../assets/Logo.png";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function SignInScreen({ setToken, navigation, route }) {
+export default function SignInScreen({
+  setToken,
+  navigation,
+  route,
+  setUserId,
+}) {
   console.log("props", route);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,6 +36,14 @@ export default function SignInScreen({ setToken, navigation, route }) {
           }
         );
 
+        console.log("response", response.data);
+
+        setUserId(response.data.id);
+        await AsyncStorage.setItem("storedId", response.data.id);
+
+        setToken(response.data.token);
+
+        // console.log("ID", response.data.id);
         alert("Vous êtes connecté");
       } catch (error) {
         console.log(error.response.status);
@@ -81,8 +95,6 @@ export default function SignInScreen({ setToken, navigation, route }) {
             onPress={async () => {
               checkInput();
               console.log("pressed");
-              const userToken = "secret-token";
-              setToken(userToken);
             }}
           />
           {fieldRemember && <Text>Please fill all the fields</Text>}

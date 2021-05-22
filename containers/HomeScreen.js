@@ -43,9 +43,9 @@ export default function HomeScreen() {
     for (let i = 1; i <= 5; i++) {
       console.log("num", i, num);
       if (i <= num) {
-        tab.push(<AntDesign name="star" size={24} color="yellow" />);
+        tab.push(<AntDesign name="star" size={24} color="yellow" key={i} />);
       } else {
-        tab.push(<AntDesign name="star" size={24} color="black" />);
+        tab.push(<AntDesign name="star" size={24} color="black" key={i} />);
       }
     }
 

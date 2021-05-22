@@ -3,14 +3,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Feather, AntDesign } from "@expo/vector-icons";
 import HomeScreen from "./containers/HomeScreen";
-import ProfileScreen from "./containers/ProfileScreen";
+//import ProfileScreen from "./containers/ProfileScreen";
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
 import SettingsScreen from "./containers/SettingsScreen";
 import RoomScreen from "./containers/RoomScreen";
 import AroundMeScreen from "./containers/AroundMeScreen";
+//import Profile from "./containers/Profile";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -18,6 +19,7 @@ const Stack = createStackNavigator();
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [userToken, setUserToken] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   const setToken = async (token) => {
     if (token) {
@@ -34,11 +36,13 @@ export default function App() {
     const bootstrapAsync = async () => {
       // We should also handle error for production apps
       const userToken = await AsyncStorage.getItem("userToken");
-
+      const id = await AsyncStorage.getItem("storedId");
       // This will switch to the App screen or Auth screen and this loading
       // screen will be unmounted and thrown away.
       setIsLoading(false);
       setUserToken(userToken);
+
+      setUserId(id);
     };
 
     bootstrapAsync();
@@ -50,10 +54,22 @@ export default function App() {
         // No token found, user isn't signed in
         <Stack.Navigator>
           <Stack.Screen name="SignIn">
-            {(props) => <SignInScreen setToken={setToken} {...props} />}
+            {(props) => (
+              <SignInScreen
+                setToken={setToken}
+                setUserId={setUserId}
+                {...props}
+              />
+            )}
           </Stack.Screen>
           <Stack.Screen name="SignUp">
-            {(props) => <SignUpScreen setToken={setToken} {...props} />}
+            {(props) => (
+              <SignUpScreen
+                setToken={setToken}
+                setUserId={setUserId}
+                {...props}
+              />
+            )}
           </Stack.Screen>
         </Stack.Navigator>
       ) : (
@@ -89,14 +105,14 @@ export default function App() {
                         {() => <HomeScreen />}
                       </Stack.Screen>
 
-                      <Stack.Screen
+                      {/* <Stack.Screen
                         name="Profile"
                         options={{
                           title: "User Profile",
                         }}
                       >
                         {() => <ProfileScreen />}
-                      </Stack.Screen>
+                      </Stack.Screen>*/}
 
                       <Stack.Screen
                         name="Room"
@@ -114,9 +130,9 @@ export default function App() {
                   name="Around Me"
                   options={{
                     title: "Around me",
-                    // tabBarIcon: ({ color, size }) => (
-                    //  <Ionicons name={"ios-home"} size={size} color={color} />
-                    // ),
+                    tabBarIcon: ({ color, size }) => (
+                      <Feather name="map-pin" size={size} color={color} />
+                    ),
                   }}
                 >
                   {() => {
@@ -129,11 +145,7 @@ export default function App() {
                   options={{
                     tabBarLabel: "Settings",
                     tabBarIcon: ({ color, size }) => (
-                      <Ionicons
-                        name={"ios-options"}
-                        size={size}
-                        color={color}
-                      />
+                      <AntDesign name="user" size={size} color={color} />
                     ),
                   }}
                 >
@@ -143,7 +155,14 @@ export default function App() {
                         name="Settings"
                         options={{ title: "Settings", tabBarLabel: "Settings" }}
                       >
-                        {() => <SettingsScreen setToken={setToken} />}
+                        {() => (
+                          <SettingsScreen
+                            setToken={setToken}
+                            setUserToken={userToken}
+                            userId={userId}
+                            userToken={userToken}
+                          />
+                        )}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}
