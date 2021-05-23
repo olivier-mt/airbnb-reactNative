@@ -138,6 +138,20 @@ export default function SettingsScreen({ setToken, userId, userToken }) {
     }
   };
 
+  const takePicture = async () => {
+    const cameraPerm = await ImagePicker.requestCameraPermissionsAsync();
+    const cameraRollPerm =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (
+      cameraPerm.status === "granted" &&
+      cameraRollPerm.status === "granted"
+    ) {
+      const pickerResult = await ImagePicker.launchCameraAsync();
+      handleImagePicked(pickerResult.uri);
+    }
+  };
+
   const handleImagePicked = (img) => {
     //  console.log("Image=>", img);
     return setImage(img);
@@ -174,9 +188,7 @@ export default function SettingsScreen({ setToken, userId, userToken }) {
             name="camera-alt"
             size={35}
             color="black"
-            onPress={() => {
-              console.log("coucou");
-            }}
+            onPress={takePicture}
           />
         </View>
       </View>

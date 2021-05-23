@@ -19,6 +19,7 @@ const AroundMeScreen = () => {
         );
 
         setData(result.data);
+        setIsLoading(false);
       } catch (error) {
         console.log(error.response.message);
       }
@@ -34,20 +35,16 @@ const AroundMeScreen = () => {
         if (status === "granted") {
           let location = await Location.getCurrentPositionAsync();
 
-          console.log(location.coords.latitude);
-          console.log(location.coords.longitude);
           console.log("location =>", location);
           const obj = {
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
           };
           setCoords(obj);
+          console.log("coords!!!", coords);
         } else {
           setError(true);
         }
-
-        console.log("coords!!!", coords);
-        setIsLoading2(false);
       } catch (error) {
         console.log(error);
       }
@@ -57,10 +54,10 @@ const AroundMeScreen = () => {
 
   //console.log("data around", data);
 
-  return isLoading && isLoading2 ? (
-    <View>
+  return isLoading ? (
+    <SafeAreaView>
       <Text>Is Loading</Text>
-    </View>
+    </SafeAreaView>
   ) : (
     <SafeAreaView style={styles.view}>
       <MapView
@@ -68,10 +65,10 @@ const AroundMeScreen = () => {
         initialRegion={{
           latitude: 48.856614,
           longitude: 2.3522219,
-          latitudeDelta: 0.2,
-          longitudeDelta: 0.2,
+          latitudeDelta: 13,
+          longitudeDelta: 13,
         }}
-        showsUserLocation={true}
+        showsUserLocation={coords ? true : false}
       >
         {/* GET EACH ROOM LOCATION*/}
 
@@ -93,8 +90,8 @@ const AroundMeScreen = () => {
 
         {/*------------------------*/}
       </MapView>
-      <Text>Latitude de l'utilisateur : {coords.latitude}</Text>
-      <Text>Longitude de l'utilisateur : {coords.longitude}</Text>
+      {/*<Text>Latitude de l'utilisateur : {coords.latitude}</Text>*/}
+      {/*<Text>Longitude de l'utilisateur : {coords.longitude}</Text>*/}
     </SafeAreaView>
   );
 };
